@@ -42,6 +42,8 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     public MyView(Context context) {
         super(context);
         init(null, 0);
+
+        //I caught ya a dollar  Just kidding.  Why is this so confusing Danny? Lord help me
     }
 
     public MyView(Context context, AttributeSet attrs) {
