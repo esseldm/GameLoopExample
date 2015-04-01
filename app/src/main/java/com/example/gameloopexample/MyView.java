@@ -59,9 +59,9 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         paddlePlayer = MediaPlayer.create(getContext(), R.raw.bounce2);
         blocks=new ArrayList<Point>();
         balls = new ArrayList<Point>();
-        Point ball1 = new Point(50,50);
+        Point ball1 = new Point(50,400);
         //TEST
-        Point ball2 = new Point(100,100);
+        Point ball2 = new Point(100,400);
         balls.add(ball1);
         //TEST
         balls.add(ball2);
@@ -155,10 +155,10 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
             } else if(blockRect.contains(x, y-BALL_SIZE) || blockRect.contains(x, y+BALL_SIZE)) {
                 return 1;
             }
-            //if(blockRect.contains(x, y+BALL_SIZE) || blockRect.contains(x-BALL_SIZE, y) ||
-                    //blockRect.contains(x+BALL_SIZE, y) || blockRect.contains(x, y-BALL_SIZE)) {
-                    //return 1;
-            //}
+            if(blockRect.contains(x, y+BALL_SIZE) || blockRect.contains(x-BALL_SIZE, y) ||
+                    blockRect.contains(x+BALL_SIZE, y) || blockRect.contains(x, y-BALL_SIZE)) {
+                    return 1;
+            }
             return -1;
         }
 
