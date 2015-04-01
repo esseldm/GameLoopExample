@@ -175,6 +175,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     if (p.y < 0 || p.y > getHeight()) {
                         yVel = -yVel;
                     }
+                    //Balls
                     //see if ball has hit paddle (or gone below it)
                     if ((rect.contains(p.x, p.y + BALL_SIZE) || rect.contains(p.x - BALL_SIZE, p.y) ||
                             rect.contains(p.x + BALL_SIZE, p.y) || rect.contains(p.x, p.y - BALL_SIZE)) && !bounce) {
