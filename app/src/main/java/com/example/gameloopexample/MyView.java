@@ -43,7 +43,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
         init(null, 0);
 
-        //I caught ya a dollar
+        //I caught ya a dollar  Just kidding
     }
 
     public MyView(Context context, AttributeSet attrs) {
