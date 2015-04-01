@@ -193,8 +193,8 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
 
                     //see if ball has hit a block
                     for (int i = 0; i < blocks.size(); i++) {
-                        Point p = blocks.get(i);
-                        int edge = hit(p, p.x, p.y);
+                        Point b = blocks.get(i);
+                        int edge = hit(b, b.x, b.y);
                         if (edge >= 0) {
                             if (blockPlayer.isPlaying()) {
                                 blockPlayer.seekTo(0);
