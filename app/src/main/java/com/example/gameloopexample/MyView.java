@@ -26,7 +26,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     private final int PADDLE_THICKNESS=20;
     private final int PADDLE_LENGTH=150;
     private final int BALL_SIZE=25;
-    private int xCenter,yCenter;
+    private ArrayList<Point> balls;
     private int xPaddle,yPaddle;
     private Rect rect;
     private double xVel,yVel;
@@ -58,8 +58,13 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         blockPlayer = MediaPlayer.create(getContext(), R.raw.bounce);
         paddlePlayer = MediaPlayer.create(getContext(), R.raw.bounce2);
         blocks=new ArrayList<Point>();
-        xCenter=50;
-        yCenter=50;
+        balls = new ArrayList<Point>();
+        Point ball1 = new Point(50,50);
+        //TEST
+        Point ball2 = new Point(100,100);
+        balls.add(ball1);
+        //TEST
+        balls.add(ball2);
         xPaddle=50;
         yPaddle=1000;
         xVel=10.0;
@@ -79,7 +84,9 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawRect(0,0,getWidth(),getHeight(),bgPaint);
-        canvas.drawCircle(xCenter,yCenter,BALL_SIZE,ballPaint);
+        for(Point p: balls) {
+            canvas.drawCircle(p.x, p.y, BALL_SIZE, ballPaint);
+        }
         canvas.drawRect(xPaddle,yPaddle,xPaddle+PADDLE_LENGTH,yPaddle+PADDLE_THICKNESS,ballPaint);
         for(Point p:blocks) {
             canvas.drawRect(p.x,p.y,p.x+blockWidth-2,p.y+blockHeight-2,ballPaint);
@@ -158,55 +165,57 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         @Override
         public void run() {
             while(running) {
-                //update state
-                xCenter+=xVel;
-                yCenter+=yVel;
-                if (xCenter<0 || xCenter>getWidth()) {
-                    xVel=-xVel;
-                }
-                if (yCenter<0 || yCenter>getHeight()) {
-                    yVel=-yVel;
-                }
-                //see if ball has hit paddle (or gone below it)
-                if((rect.contains(xCenter, yCenter+BALL_SIZE) || rect.contains(xCenter-BALL_SIZE, yCenter) ||
-                        rect.contains(xCenter+BALL_SIZE, yCenter) || rect.contains(xCenter, yCenter-BALL_SIZE)) && !bounce) {
-                    if(paddlePlayer.isPlaying()) {
-                        paddlePlayer.seekTo(0);
-                    } else {
-                        paddlePlayer.start();
+                for(Point p: balls) {
+                    //update state
+                        p.x += xVel;
+                        p.y += yVel;
+                    if (p.x < 0 || p.x > getWidth()) {
+                        xVel = -xVel;
                     }
-                    yVel=-yVel;
-                    yVel+=(rand.nextInt(10)-5);
-                    xVel+=(rand.nextInt(10)-5);
-                    bounce=true;
-                } else {
-                    bounce=false;
-                }
-
-                //see if ball has hit a block
-                for(int i=0;i<blocks.size();i++) {
-                    Point p=blocks.get(i);
-                    int edge=hit(p,xCenter,yCenter);
-                    if (edge>=0) {
-                        if(blockPlayer.isPlaying()) {
-                            blockPlayer.seekTo(0);
+                    if (p.y < 0 || p.y > getHeight()) {
+                        yVel = -yVel;
+                    }
+                    //see if ball has hit paddle (or gone below it)
+                    if ((rect.contains(p.x, p.y + BALL_SIZE) || rect.contains(p.x - BALL_SIZE, p.y) ||
+                            rect.contains(p.x + BALL_SIZE, p.y) || rect.contains(p.x, p.y - BALL_SIZE)) && !bounce) {
+                        if (paddlePlayer.isPlaying()) {
+                            paddlePlayer.seekTo(0);
                         } else {
-                            blockPlayer.start();
+                            paddlePlayer.start();
                         }
-                        blocks.remove(i);
-                        switch (edge) {
-                            case 0: //bounce x
-                                xVel=-xVel;
-                                break;
-                            case 1: //bounce y
-                                yVel=-yVel;
-                                break;
-                            case 2: //bounce both
-                                xVel=-xVel;
-                                yVel=-yVel;
-                                break;
+                        yVel = -yVel;
+                        yVel += (rand.nextInt(10) - 5);
+                        xVel += (rand.nextInt(10) - 5);
+                        bounce = true;
+                    } else {
+                        bounce = false;
+                    }
+
+                    //see if ball has hit a block
+                    for (int i = 0; i < blocks.size(); i++) {
+                        Point p = blocks.get(i);
+                        int edge = hit(p, p.x, p.y);
+                        if (edge >= 0) {
+                            if (blockPlayer.isPlaying()) {
+                                blockPlayer.seekTo(0);
+                            } else {
+                                blockPlayer.start();
+                            }
+                            blocks.remove(i);
+                            switch (edge) {
+                                case 0: //bounce x
+                                    xVel = -xVel;
+                                    break;
+                                case 1: //bounce y
+                                    yVel = -yVel;
+                                    break;
+                                case 2: //bounce both
+                                    xVel = -xVel;
+                                    yVel = -yVel;
+                                    break;
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
 
