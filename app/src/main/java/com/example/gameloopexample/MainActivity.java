@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 
-
 public class MainActivity extends Activity {
 
     @Override
@@ -22,7 +21,6 @@ public class MainActivity extends Activity {
         startActivity(new Intent(MainActivity.this, GamePlay.class));
         //Test Test
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
