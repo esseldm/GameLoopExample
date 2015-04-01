@@ -19,7 +19,7 @@ public class MainActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         startActivity(new Intent(MainActivity.this, GamePlay.class));
-        //Test Test
+
     }
 
     @Override
