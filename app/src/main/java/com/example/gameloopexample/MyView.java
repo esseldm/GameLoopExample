@@ -155,7 +155,8 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         @Override
         public void run() {
             while(running) {
-                for (Ball p : balls) {
+                for (int count = 0; count < balls.size(); count++) {
+                    Ball p = balls.get(count);
                     //up
                     p.setPositionX((int) ((double) p.getPositionX() + p.getxVel()));
                     p.setPositionY((int) ((double) p.getPositionY() + p.getyVel()));
@@ -165,11 +166,16 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     if (p.getPositionY() < 0 || p.getPositionY() > getHeight()) {
                         p.setyVel(-p.getyVel());
                     }
-                    if (p.getPositionY() + BALL_SIZE > rect.bottom) {
-                        Log.d("BALLS", "x:" + p.getPositionX() + "y:" + p.getPositionY());
-                        Log.d("IN the paddle", "x:" + rect.centerX() + "y:" + rect.centerY());
-                    }
                     //Balls
+                    //Check to see if ball is below paddle.  If yes, remove ball.  If no more balls exists, game over
+                    if (p.getPositionY() + BALL_SIZE > rect.bottom) {
+                        balls.remove(p);
+                        if (balls.size() == 0) {
+                            //User lost.  Spawning in another ball
+                            balls.add(new Ball(450, 450, 10, 25));
+                        }
+                        continue;
+                    }
                     //see if ball has hit paddle (or gone below it)
                     if ((rect.contains(p.getPositionX(), p.getPositionY() + BALL_SIZE) || rect.contains(p.getPositionX() - BALL_SIZE, p.getPositionY()) ||
                             rect.contains(p.getPositionX() + BALL_SIZE, p.getPositionY()) || rect.contains(p.getPositionX(), p.getPositionY() - BALL_SIZE)) && !p.bounce) {
