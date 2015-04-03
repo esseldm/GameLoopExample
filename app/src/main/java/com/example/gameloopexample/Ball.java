@@ -3,8 +3,6 @@ package com.example.gameloopexample;
 /**
  * Created by richardselep on 4/1/15.
  */
-<<<<<<< HEAD
-
 public class Ball {
 
     private int positionX;
@@ -56,12 +54,4 @@ public class Ball {
 
         //Lots of fun stuff will go here eventually
     }
-=======
-public class Ball {
-
-    public int positionX;
-    public int positionY;
-    public int xVel;
-    public int yVel;
->>>>>>> origin/master
 }
