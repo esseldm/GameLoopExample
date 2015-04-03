@@ -148,10 +148,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
             } else if(blockRect.contains(x, y-BALL_SIZE) || blockRect.contains(x, y+BALL_SIZE)) {
                 return 1;
             }
-            // if(blockRect.contains(x, y+BALL_SIZE) || blockRect.contains(x-BALL_SIZE, y) ||
-            //         blockRect.contains(x+BALL_SIZE, y) || blockRect.contains(x, y-BALL_SIZE)) {
-            //         return 1;
-            // }
+
             return -1;
         }
 
@@ -192,7 +189,8 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     //see if ball has hit a block
                     for (int i = 0; i < blocks.size(); i++) {
                         Point b = blocks.get(i);
-                        int edge = hit(b, b.x, b.y);
+                        Log.d("Points", b.toString());
+                        int edge = hit(b, p.getPositionX(), p.getPositionY());
                         if (edge >= 0) {
                             if (blockPlayer.isPlaying()) {
                                 blockPlayer.seekTo(0);
@@ -200,6 +198,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                                 blockPlayer.start();
                             }
                             blocks.remove(i);
+                            Log.d("Edge", edge + "");
                             switch (edge) {
                                 case 0: //bounce x
                                     p.setxVel(-p.getxVel());
