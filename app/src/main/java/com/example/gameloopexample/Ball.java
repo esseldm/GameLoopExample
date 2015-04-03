@@ -7,11 +7,11 @@ public class Ball {
 
     private int positionX;
     private int positionY;
-    private int xVel;
-    private int yVel;
+    private double xVel;
+    private double yVel;
 
 
-    public Ball(int positionX, int positionY, int xVel, int yVel) {
+    public Ball(int positionX, int positionY, double xVel, double yVel) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.xVel = xVel;
@@ -34,7 +34,7 @@ public class Ball {
         this.positionY = positionY;
     }
 
-    public int getxVel() {
+    public double getxVel() {
         return xVel;
     }
 
@@ -42,7 +42,7 @@ public class Ball {
         this.xVel = xVel;
     }
 
-    public int getyVel() {
+    public double getyVel() {
         return yVel;
     }
 

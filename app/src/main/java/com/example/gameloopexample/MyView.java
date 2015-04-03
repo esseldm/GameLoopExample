@@ -26,7 +26,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     private final int PADDLE_THICKNESS=20;
     private final int PADDLE_LENGTH=150;
     private final int BALL_SIZE=25;
-    private ArrayList<Point> balls;
+    private ArrayList<Ball> balls;
     private int xPaddle,yPaddle;
     private Rect rect;
     private double xVel,yVel;
@@ -58,17 +58,15 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         blockPlayer = MediaPlayer.create(getContext(), R.raw.bounce);
         paddlePlayer = MediaPlayer.create(getContext(), R.raw.bounce2);
         blocks=new ArrayList<Point>();
-        balls = new ArrayList<Point>();
-        Point ball1 = new Point(50,400);
+        balls = new ArrayList<Ball>();
+        Ball ball1 = new Ball(50,400,10.0,25.0);
         //TEST
-        Point ball2 = new Point(100,400);
+        Ball ball2 = new Ball(100,400,10.0,25.0);
         balls.add(ball1);
         //TEST
         balls.add(ball2);
         xPaddle=50;
         yPaddle=1000;
-        xVel=10.0;
-        yVel=25.0;
         bgPaint=new Paint();
         bgPaint.setColor(Color.BLACK);
         ballPaint=new Paint();
@@ -84,8 +82,8 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawRect(0,0,getWidth(),getHeight(),bgPaint);
-        for(Point p: balls) {
-            canvas.drawCircle(p.x, p.y, BALL_SIZE, ballPaint);
+        for(Ball p: balls) {
+            canvas.drawCircle(p.getPositionX(), p.getPositionY(), BALL_SIZE, ballPaint);
         }
         canvas.drawRect(xPaddle,yPaddle,xPaddle+PADDLE_LENGTH,yPaddle+PADDLE_THICKNESS,ballPaint);
         for(Point p:blocks) {
