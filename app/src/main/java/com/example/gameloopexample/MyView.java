@@ -8,6 +8,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -26,7 +27,6 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     private int xPaddle,yPaddle;
     private Rect rect;
     private Paint bgPaint,ballPaint;
-    private boolean bounce;
     private MyThread thread;
     private ArrayList<Point> blocks;
     private int blockWidth;
@@ -56,7 +56,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         balls = new ArrayList<Ball>();
         Ball ball1 = new Ball(50,400,10.0,25.0);
         //TEST
-        Ball ball2 = new Ball(100,400,10.0,25.0);
+        Ball ball2 = new Ball(300, 400, 10.0, 25.0);
         balls.add(ball1);
         //TEST
         balls.add(ball2);
@@ -69,7 +69,6 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         thread=new MyThread();
         getHolder().addCallback(this);
         setFocusable(true);
-        bounce=false;
     }
 
 
@@ -98,6 +97,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder) {
         blockWidth=getWidth()/NUM_COLS;
         blockHeight=getHeight()/50;
+        //CHange this
         for(int i=0;i<NUM_ROWS;i++) {
             for(int j=0;j<NUM_COLS;j++) {
                 blocks.add(new Point(j*blockWidth,i*blockHeight+TOP_MARGIN));
@@ -148,10 +148,10 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
             } else if(blockRect.contains(x, y-BALL_SIZE) || blockRect.contains(x, y+BALL_SIZE)) {
                 return 1;
             }
-            if(blockRect.contains(x, y+BALL_SIZE) || blockRect.contains(x-BALL_SIZE, y) ||
-                    blockRect.contains(x+BALL_SIZE, y) || blockRect.contains(x, y-BALL_SIZE)) {
-                    return 1;
-            }
+            // if(blockRect.contains(x, y+BALL_SIZE) || blockRect.contains(x-BALL_SIZE, y) ||
+            //         blockRect.contains(x+BALL_SIZE, y) || blockRect.contains(x, y-BALL_SIZE)) {
+            //         return 1;
+            // }
             return -1;
         }
 
@@ -168,10 +168,15 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     if (p.getPositionY() < 0 || p.getPositionY() > getHeight()) {
                         p.setyVel(-p.getyVel());
                     }
+                    if (p.getPositionX() < rect.centerX() - BALL_SIZE || p.getPositionX() > rect.centerX() + BALL_SIZE) {
+                        Log.d("BALLS", "x:" + p.getPositionX() + "y:" + p.getPositionY());
+                        Log.d("IN the paddle", "x:" + rect.centerX() + "y:" + rect.centerY());
+                    }
                     //Balls
                     //see if ball has hit paddle (or gone below it)
                     if ((rect.contains(p.getPositionX(), p.getPositionY() + BALL_SIZE) || rect.contains(p.getPositionX() - BALL_SIZE, p.getPositionY()) ||
-                            rect.contains(p.getPositionX() + BALL_SIZE, p.getPositionY()) || rect.contains(p.getPositionX(), p.getPositionY() - BALL_SIZE)) && !bounce) {
+                            rect.contains(p.getPositionX() + BALL_SIZE, p.getPositionY()) || rect.contains(p.getPositionX(), p.getPositionY() - BALL_SIZE)) && !p.bounce) {
+                        Log.d("IN the paddle", "HERE");
                         if (paddlePlayer.isPlaying()) {
                             paddlePlayer.seekTo(0);
                         } else {
@@ -180,9 +185,9 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                         p.setyVel(-p.getyVel());
                         p.setyVel(p.getyVel() + (rand.nextInt(10) - 5));
                         p.setxVel(p.getxVel() + (rand.nextInt(10) - 5));
-                        bounce = true;
+                        p.bounce = true;
                     } else {
-                        bounce = false;
+                        p.bounce = false;
                     }
 
                     //see if ball has hit a block

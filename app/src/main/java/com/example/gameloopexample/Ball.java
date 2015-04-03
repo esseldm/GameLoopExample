@@ -6,17 +6,18 @@ package com.example.gameloopexample;
 
 public class Ball {
 
+    public boolean bounce;
     private int positionX;
     private int positionY;
     private double xVel;
     private double yVel;
-
 
     public Ball(int positionX, int positionY, double xVel, double yVel) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.xVel = xVel;
         this.yVel = yVel;
+        bounce = false;
     }
 
     public int getPositionX() {
