@@ -168,7 +168,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     if (p.getPositionY() < 0 || p.getPositionY() > getHeight()) {
                         p.setyVel(-p.getyVel());
                     }
-                    if (p.getPositionX() < rect.centerX() - BALL_SIZE || p.getPositionX() > rect.centerX() + BALL_SIZE) {
+                    if (p.getPositionY() + BALL_SIZE > rect.bottom) {
                         Log.d("BALLS", "x:" + p.getPositionX() + "y:" + p.getPositionY());
                         Log.d("IN the paddle", "x:" + rect.centerX() + "y:" + rect.centerY());
                     }

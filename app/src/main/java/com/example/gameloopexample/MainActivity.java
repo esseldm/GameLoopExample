@@ -1,8 +1,6 @@
 package com.example.gameloopexample;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,8 +16,6 @@ public class MainActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
-        startActivity(new Intent(MainActivity.this, GamePlay.class));
-        //This is very helpful!!!!!
     }
 
     @Override
