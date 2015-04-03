@@ -54,9 +54,9 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         paddlePlayer = MediaPlayer.create(getContext(), R.raw.bounce2);
         blocks=new ArrayList<Point>();
         balls = new ArrayList<Ball>();
-        Ball ball1 = new Ball(50,400,10.0,25.0);
+        Ball ball1 = new Ball(50, 600, 10.0, 25.0);
         //TEST
-        Ball ball2 = new Ball(300, 400, 10.0, 25.0);
+        Ball ball2 = new Ball(300, 200, 10.0, 25.0);
         balls.add(ball1);
         //TEST
         balls.add(ball2);
@@ -176,7 +176,6 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     //see if ball has hit paddle (or gone below it)
                     if ((rect.contains(p.getPositionX(), p.getPositionY() + BALL_SIZE) || rect.contains(p.getPositionX() - BALL_SIZE, p.getPositionY()) ||
                             rect.contains(p.getPositionX() + BALL_SIZE, p.getPositionY()) || rect.contains(p.getPositionX(), p.getPositionY() - BALL_SIZE)) && !p.bounce) {
-                        Log.d("IN the paddle", "HERE");
                         if (paddlePlayer.isPlaying()) {
                             paddlePlayer.seekTo(0);
                         } else {
