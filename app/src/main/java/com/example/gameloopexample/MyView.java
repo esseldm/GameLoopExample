@@ -1,20 +1,16 @@
 package com.example.gameloopexample;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -29,7 +25,6 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     private ArrayList<Ball> balls;
     private int xPaddle,yPaddle;
     private Rect rect;
-    private double xVel,yVel;
     private Paint bgPaint,ballPaint;
     private boolean bounce;
     private MyThread thread;
@@ -163,28 +158,28 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         @Override
         public void run() {
             while(running) {
-                for(Point p: balls) {
-                    //update state
-                        p.x += xVel;
-                        p.y += yVel;
-                    if (p.x < 0 || p.x > getWidth()) {
-                        xVel = -xVel;
+                for (Ball p : balls) {
+                    //up
+                    p.setPositionX((int) ((double) p.getPositionX() + p.getxVel()));
+                    p.setPositionY((int) ((double) p.getPositionY() + p.getyVel()));
+                    if (p.getPositionX() < 0 || p.getPositionX() > getWidth()) {
+                        p.setxVel(-p.getxVel());
                     }
-                    if (p.y < 0 || p.y > getHeight()) {
-                        yVel = -yVel;
+                    if (p.getPositionY() < 0 || p.getPositionY() > getHeight()) {
+                        p.setyVel(-p.getyVel());
                     }
                     //Balls
                     //see if ball has hit paddle (or gone below it)
-                    if ((rect.contains(p.x, p.y + BALL_SIZE) || rect.contains(p.x - BALL_SIZE, p.y) ||
-                            rect.contains(p.x + BALL_SIZE, p.y) || rect.contains(p.x, p.y - BALL_SIZE)) && !bounce) {
+                    if ((rect.contains(p.getPositionX(), p.getPositionY() + BALL_SIZE) || rect.contains(p.getPositionX() - BALL_SIZE, p.getPositionY()) ||
+                            rect.contains(p.getPositionX() + BALL_SIZE, p.getPositionY()) || rect.contains(p.getPositionX(), p.getPositionY() - BALL_SIZE)) && !bounce) {
                         if (paddlePlayer.isPlaying()) {
                             paddlePlayer.seekTo(0);
                         } else {
                             paddlePlayer.start();
                         }
-                        yVel = -yVel;
-                        yVel += (rand.nextInt(10) - 5);
-                        xVel += (rand.nextInt(10) - 5);
+                        p.setyVel(-p.getyVel());
+                        p.setyVel(p.getyVel() + (rand.nextInt(10) - 5));
+                        p.setxVel(p.getxVel() + (rand.nextInt(10) - 5));
                         bounce = true;
                     } else {
                         bounce = false;
@@ -203,14 +198,14 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                             blocks.remove(i);
                             switch (edge) {
                                 case 0: //bounce x
-                                    xVel = -xVel;
+                                    p.setxVel(-p.getxVel());
                                     break;
                                 case 1: //bounce y
-                                    yVel = -yVel;
+                                    p.setyVel(-p.getyVel());
                                     break;
                                 case 2: //bounce both
-                                    xVel = -xVel;
-                                    yVel = -yVel;
+                                    p.setxVel(-p.getxVel());
+                                    p.setyVel(-p.getyVel());
                                     break;
                             }
                             break;

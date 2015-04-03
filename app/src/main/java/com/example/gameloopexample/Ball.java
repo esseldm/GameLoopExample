@@ -3,6 +3,7 @@ package com.example.gameloopexample;
 /**
  * Created by richardselep on 4/1/15.
  */
+
 public class Ball {
 
     private int positionX;
@@ -38,7 +39,7 @@ public class Ball {
         return xVel;
     }
 
-    public void setxVel(int xVel) {
+    public void setxVel(double xVel) {
         this.xVel = xVel;
     }
 
@@ -46,7 +47,7 @@ public class Ball {
         return yVel;
     }
 
-    public void setyVel(int yVel) {
+    public void setyVel(double yVel) {
         this.yVel = yVel;
     }
 
