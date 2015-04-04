@@ -4,23 +4,18 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 public class MyView extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -132,17 +127,17 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         blockHeight=getHeight()/50;
 
         for(int i=0;i<gameBoard.length;i++) {
-                for(int j=0;j<gameBoard[i].length;j++) {
-                    if(gameBoard[i][j] == 1) {
-                        blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN,1));
+            for (int j = 0; j < gameBoard[i].length; j++) {
+                if (gameBoard[i][j] == 1) {
+                    blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN, 1));
 
-                    }
-                    if(gameBoard[i][j] == 2) {
-
-                        blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN,2));
-
-                    }
                 }
+                if (gameBoard[i][j] == 2) {
+
+                    blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN, 2));
+
+                }
+            }
         }
         yPaddle=getHeight()-PADDLE_THICKNESS*6;
         xPaddle=getWidth()/2-PADDLE_LENGTH/2;
@@ -220,15 +215,22 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     //see if ball has hit paddle (or gone below it)
                     if ((rect.contains(p.getPositionX(), p.getPositionY() + BALL_SIZE) || rect.contains(p.getPositionX() - BALL_SIZE, p.getPositionY()) ||
                             rect.contains(p.getPositionX() + BALL_SIZE, p.getPositionY()) || rect.contains(p.getPositionX(), p.getPositionY() - BALL_SIZE)) && !p.bounce) {
-                        if (paddlePlayer.isPlaying()) {
-                            paddlePlayer.seekTo(0);
+                        //Check to see if ball that hit paddle was special ability
+                        if (p.getxVel() == 0 && p.getyVel() == 10) {
+                            balls.remove(p);
+                            balls.add(new Ball(getWidth() / 2, getHeight() / 2, 15, 15));
+                            continue;
                         } else {
-                            paddlePlayer.start();
+                            if (paddlePlayer.isPlaying()) {
+                                paddlePlayer.seekTo(0);
+                            } else {
+                                paddlePlayer.start();
+                            }
+                            p.setyVel(-p.getyVel());
+                            p.setyVel(p.getyVel() + Math.abs(p.getPositionX() - rect.centerX()) / 5);
+                            p.setxVel(p.getxVel() + rand.nextInt(10) - 5);
+                            p.bounce = true;
                         }
-                        p.setyVel(-p.getyVel());
-                        p.setyVel(p.getyVel() + Math.abs(p.getPositionX() - rect.centerX()) / 5);
-                        p.setxVel(p.getxVel() + rand.nextInt(10) - 5);
-                        p.bounce = true;
                     } else {
                         p.bounce = false;
                     }
@@ -242,6 +244,15 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                                 blockPlayer.seekTo(0);
                             } else {
                                 blockPlayer.start();
+                            }
+                            switch (blocks.get(i).specialAbility) {
+                                case 1:
+                                    //Do Nothing Special except remove block
+                                    break;
+                                case 2:
+                                    //Multiple balls on screen.  Make new ball fall straight down
+                                    balls.add(new Ball(blocks.get(i).getX + (blockWidth / 2), blocks.get(i).getY, 0, 10));
+                                    break;
                             }
                             blocks.remove(i);
                             switch (edge) {
