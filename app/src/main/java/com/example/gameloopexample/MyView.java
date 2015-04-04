@@ -8,7 +8,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -160,15 +159,15 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     //up
                     p.setPositionX((int) ((double) p.getPositionX() + p.getxVel()));
                     p.setPositionY((int) ((double) p.getPositionY() + p.getyVel()));
-                    if (p.getPositionX() < 0 || p.getPositionX() > getWidth()) {
+                    if (p.getPositionX() - BALL_SIZE < 0 || p.getPositionX() + BALL_SIZE > getWidth()) {
                         p.setxVel(-p.getxVel());
                     }
-                    if (p.getPositionY() < 0 || p.getPositionY() > getHeight()) {
+                    if (p.getPositionY() - BALL_SIZE < 0 || p.getPositionY() + BALL_SIZE > getHeight()) {
                         p.setyVel(-p.getyVel());
                     }
                     //Balls
                     //Check to see if ball is below paddle.  If yes, remove ball.  If no more balls exists, game over
-                    if (p.getPositionY() + BALL_SIZE > rect.bottom) {
+                    if (p.getPositionY() - BALL_SIZE > rect.bottom) {
                         balls.remove(p);
                         if (balls.size() == 0) {
                             //User lost.  Spawning in another ball
@@ -185,8 +184,8 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                             paddlePlayer.start();
                         }
                         p.setyVel(-p.getyVel());
-                        p.setyVel(p.getyVel() + (rand.nextInt(10) - 5));
-                        p.setxVel(p.getxVel() + (rand.nextInt(10) - 5));
+                        p.setyVel(p.getyVel() + Math.abs(p.getPositionX() - rect.centerX()) / 5);
+                        p.setxVel(p.getxVel() + rand.nextInt(10) - 5);
                         p.bounce = true;
                     } else {
                         p.bounce = false;
@@ -195,7 +194,6 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     //see if ball has hit a block
                     for (int i = 0; i < blocks.size(); i++) {
                         Point b = blocks.get(i);
-                        Log.d("Points", b.toString());
                         int edge = hit(b, p.getPositionX(), p.getPositionY());
                         if (edge >= 0) {
                             if (blockPlayer.isPlaying()) {
@@ -204,7 +202,6 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                                 blockPlayer.start();
                             }
                             blocks.remove(i);
-                            Log.d("Edge", edge + "");
                             switch (edge) {
                                 case 0: //bounce x
                                     p.setxVel(-p.getxVel());
