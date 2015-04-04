@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class MyView extends SurfaceView implements SurfaceHolder.Callback {
+
     private static final int NUM_ROWS = 3;
     private static final int NUM_COLS = 10;
     private static final int TOP_MARGIN = 50;
