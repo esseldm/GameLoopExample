@@ -28,6 +28,8 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     private final int SPECIAL_ABILITY_BALL_SIZE = 10;
     private final int MULTIPLE_BALL_COLOR = Color.RED;
     private final int SPECIAL_ABILITY_FALL_SPEED = 15;
+    private final int PADDLE_WIDTH_INCREASE = 100;
+    private final int PADDLE_THICKNESS_INCREASE = 10;
     private ArrayList<Ball> balls;
     private int xPaddle,yPaddle;
     private Rect rect;
@@ -161,6 +163,11 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+    public void resetPaddle() {
+        PADDLE_THICKNESS = PADDLE_THICKNESS - PADDLE_THICKNESS_INCREASE;
+
+    }
+
     class MyThread extends Thread {
 
         private boolean running;
@@ -224,8 +231,8 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                                 paddlePlayer.start();
                             }
                             p.setyVel(-p.getyVel());
-                            p.setyVel(p.getyVel() + Math.abs(p.getPositionX() - rect.centerX()) / 5);
-                            p.setxVel(p.getxVel() + rand.nextInt(10) - 5);
+                            p.setyVel(p.getyVel() + 1);
+                            p.setxVel(p.getxVel() + Math.abs(p.getPositionX() - rect.centerX()) / 5);
                             p.bounce = true;
                         }
                     } else {
@@ -248,7 +255,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                                     break;
                                 case 2:
                                     //Multiple balls on screen.  Make new ball fall straight down
-                                    balls.add(new Ball(blocks.get(i).getX + (blockWidth / 2), blocks.get(i).getY, 0, SPECIAL_ABILITY_FALL_SPEED, SPECIAL_ABILITY_BALL_SIZE, MULTIPLE_BALL_COLOR));
+                                    balls.add(new Ball(blocks.get(i).getX + (blockWidth / 2), blocks.get(i).getY - blockHeight, 0, SPECIAL_ABILITY_FALL_SPEED, SPECIAL_ABILITY_BALL_SIZE, MULTIPLE_BALL_COLOR));
                                     break;
                             }
                             blocks.remove(i);
