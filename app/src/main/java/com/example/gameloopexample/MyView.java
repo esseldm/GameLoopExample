@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -25,10 +26,13 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     private final int BALL_SIZE=25;
     private final int SPECIAL_ABILITY_BALL_SIZE = 10;
     private final int MULTIPLE_BALL_COLOR = Color.RED;
+    private final int PADDLE_INCREASE_COLOR = Color.GREEN;
     private final int SPECIAL_ABILITY_FALL_SPEED = 15;
     private final int PADDLE_LENGTH_INCREASE = 100;
     private final int PADDLE_THICKNESS_INCREASE = 10;
     private final int PADDLE_INCREASE_TIME = 15;
+    private final int MULTIPLE_BALLS = 1;
+    private final int PADDLE_INCREASE = 2;
     public int paddle_thickness = 20;
     public int paddle_length = 150;
     private Handler handler;
@@ -36,7 +40,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     private ArrayList<Ball> balls;
     private int xPaddle,yPaddle;
     private Rect rect;
-    private Paint bgPaint,ballPaint;
+    private Paint bgPaint, blockPaint;
     private MyThread thread;
     private ArrayList<Block> blocks;
     private int blockWidth;
@@ -77,6 +81,8 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         setFocusable(true);
         gameBoard = new int[20][10];
         handler = new Handler();
+        blockPaint = new Paint();
+        blockPaint.setColor(Color.BLUE);
 
         paddleRunnable = new Runnable() {
             @Override
@@ -118,9 +124,9 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         for(Ball p: balls) {
             canvas.drawCircle(p.getPositionX(), p.getPositionY(), p.radius, p.paint);
         }
-        canvas.drawRect(xPaddle, yPaddle, xPaddle + paddle_length, yPaddle + paddle_thickness, ballPaint);
+        canvas.drawRect(xPaddle, yPaddle, xPaddle + paddle_length, yPaddle + paddle_thickness, blockPaint);
         for(Block p:blocks) {
-            canvas.drawRect(p.getX,p.getY,p.getX+blockWidth-2,p.getY+blockHeight-2,ballPaint);
+            canvas.drawRect(p.getX, p.getY, p.getX + blockWidth - 2, p.getY + blockHeight - 2, blockPaint);
         }
     }
 
@@ -140,14 +146,17 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         for(int i=0;i<gameBoard.length;i++) {
             for (int j = 0; j < gameBoard[i].length; j++) {
                 if (gameBoard[i][j] == 1) {
-                    blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN, 1));
+                    blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN, 0));
 
+                } else if (gameBoard[i][j] == 2) {
+
+                    blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN, MULTIPLE_BALLS));
+
+                } else if (gameBoard[i][j] == 3) {
+
+                    blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN, PADDLE_INCREASE));
                 }
-                if (gameBoard[i][j] == 2) {
 
-                    blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN, 2));
-
-                }
             }
         }
         yPaddle = getHeight() - paddle_thickness * 6;
@@ -227,10 +236,14 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     if ((rect.contains(p.getPositionX(), p.getPositionY() + BALL_SIZE) || rect.contains(p.getPositionX() - BALL_SIZE, p.getPositionY()) ||
                             rect.contains(p.getPositionX() + BALL_SIZE, p.getPositionY()) || rect.contains(p.getPositionX(), p.getPositionY() - BALL_SIZE)) && !p.bounce) {
                         //Check to see if ball that hit paddle was special ability
-                        if (p.getxVel() == 0 && p.getyVel() == 10) {
+                        if (p.getSpecial_ability() == MULTIPLE_BALLS) {
                             balls.remove(p);
                             balls.add(new Ball(getWidth() / 2, getHeight() / 2, 15, 15));
                             continue;
+                        } else if (p.getSpecial_ability() == PADDLE_INCREASE) {
+                            paddle_length += PADDLE_LENGTH_INCREASE;
+                            paddle_thickness += PADDLE_THICKNESS_INCREASE;
+                            handler.postDelayed(paddleRunnable, PADDLE_INCREASE_TIME * 1000);
                         } else {
                             if (paddlePlayer.isPlaying()) {
                                 paddlePlayer.seekTo(0);
@@ -256,21 +269,16 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                             } else {
                                 blockPlayer.start();
                             }
-                            switch (blocks.get(i).specialAbility) {
-                                case 1:
-                                    //Do Nothing Special except remove block
-                                    break;
-                                case 2:
-                                    //Multiple balls on screen.  Make new ball fall straight down
-                                    balls.add(new Ball(blocks.get(i).getX + (blockWidth / 2), blocks.get(i).getY - blockHeight, 0, SPECIAL_ABILITY_FALL_SPEED, SPECIAL_ABILITY_BALL_SIZE, MULTIPLE_BALL_COLOR));
-                                    break;
-                                case 3:
-                                    //Increase Paddle Size.  Start Paddle Countdown Timer
-                                    paddle_length += PADDLE_LENGTH_INCREASE;
-                                    paddle_thickness += PADDLE_THICKNESS_INCREASE;
-                                    handler.postDelayed(paddleRunnable, PADDLE_INCREASE_TIME * 1000);
-                                    break;
+                            if (blocks.get(i).specialAbility > 0) {
+                                if (blocks.get(i).specialAbility == MULTIPLE_BALLS) {
+                                    Log.d("Balls", "Creating Multiple Ball Special Ability");
+                                    balls.add(new Ball(blocks.get(i).getX + (blockWidth / 2), blocks.get(i).getY - blockHeight, 0, SPECIAL_ABILITY_FALL_SPEED, SPECIAL_ABILITY_BALL_SIZE, MULTIPLE_BALL_COLOR, blocks.get(i).specialAbility));
+                                } else if (blocks.get(i).specialAbility == PADDLE_INCREASE) {
+                                    Log.d("Balls", "Creating Increase Paddle Special Ability");
+                                    balls.add(new Ball(blocks.get(i).getX + (blockWidth / 2), blocks.get(i).getY - blockHeight, 0, SPECIAL_ABILITY_FALL_SPEED, SPECIAL_ABILITY_BALL_SIZE, PADDLE_INCREASE_COLOR, blocks.get(i).specialAbility));
+                                }
                             }
+
                             blocks.remove(i);
                             switch (edge) {
                                 case 0: //bounce x

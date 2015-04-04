@@ -16,6 +16,7 @@ public class Ball {
     private int positionY;
     private double xVel;
     private double yVel;
+    private int special_ability;
 
     public Ball(int positionX, int positionY, double xVel, double yVel) {
         this.positionX = positionX;
@@ -25,9 +26,10 @@ public class Ball {
         bounce = false;
         paint = new Paint();
         paint.setColor(Color.BLUE);
+        special_ability = 0;
     }
 
-    public Ball(int positionX, int positionY, double xVel, double yVel, int radius, int color) {
+    public Ball(int positionX, int positionY, double xVel, double yVel, int radius, int color, int special_ability) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.xVel = xVel;
@@ -36,6 +38,7 @@ public class Ball {
         this.radius = radius;
         this.paint = new Paint();
         paint.setColor(color);
+        this.special_ability = special_ability;
     }
 
     public int getPositionX() {
@@ -68,6 +71,10 @@ public class Ball {
 
     public void setyVel(double yVel) {
         this.yVel = yVel;
+    }
+
+    public int getSpecial_ability() {
+        return special_ability;
     }
 
     class BallThread extends Thread {
