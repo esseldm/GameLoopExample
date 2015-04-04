@@ -8,12 +8,19 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 public class MyView extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -28,11 +35,13 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     private Rect rect;
     private Paint bgPaint,ballPaint;
     private MyThread thread;
-    private ArrayList<Point> blocks;
+    private ArrayList<Block> blocks;
     private int blockWidth;
     private int blockHeight;
     private MediaPlayer blockPlayer;
     private MediaPlayer paddlePlayer;
+
+    private int[][] gameBoard;
 
     public MyView(Context context) {
         super(context);
@@ -52,7 +61,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     private void init(AttributeSet attrs, int defStyle) {
         blockPlayer = MediaPlayer.create(getContext(), R.raw.bounce);
         paddlePlayer = MediaPlayer.create(getContext(), R.raw.bounce2);
-        blocks=new ArrayList<Point>();
+        blocks=new ArrayList<Block>();
         balls = new ArrayList<Ball>();
         Ball ball1 = new Ball(50, 600, 10.0, 25.0);
         //TEST
@@ -65,10 +74,34 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         bgPaint=new Paint();
         bgPaint.setColor(Color.BLACK);
         ballPaint=new Paint();
-        ballPaint.setColor(Color.RED);
+        ballPaint.setColor(Color.BLUE);
         thread=new MyThread();
         getHolder().addCallback(this);
         setFocusable(true);
+        gameBoard = new int[20][10];
+
+
+        InputStream s = getResources().openRawResource(R.raw.boardlayout1);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(s));
+        int row = 0;
+        try {
+            String line = bufferedReader.readLine();
+            while (line != null) {
+                String[] values = line.split(" ");
+
+                for(int i = 0; i < values.length;i++){
+                    gameBoard[row][i]= Integer.parseInt(values[i]);
+
+                }
+                line = bufferedReader.readLine();
+                row++;
+            }
+        }catch(Exception ex){
+
+        }finally{
+
+        }
+
     }
 
 
@@ -80,8 +113,8 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
             canvas.drawCircle(p.getPositionX(), p.getPositionY(), BALL_SIZE, ballPaint);
         }
         canvas.drawRect(xPaddle,yPaddle,xPaddle+PADDLE_LENGTH,yPaddle+PADDLE_THICKNESS,ballPaint);
-        for(Point p:blocks) {
-            canvas.drawRect(p.x,p.y,p.x+blockWidth-2,p.y+blockHeight-2,ballPaint);
+        for(Block p:blocks) {
+            canvas.drawRect(p.getX,p.getY,p.getX+blockWidth-2,p.getY+blockHeight-2,ballPaint);
         }
     }
 
@@ -97,11 +130,19 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder) {
         blockWidth=getWidth()/NUM_COLS;
         blockHeight=getHeight()/50;
-        //CHange this
-        for(int i=0;i<NUM_ROWS;i++) {
-            for(int j=0;j<NUM_COLS;j++) {
-                blocks.add(new Point(j*blockWidth,i*blockHeight+TOP_MARGIN));
-            }
+
+        for(int i=0;i<gameBoard.length;i++) {
+                for(int j=0;j<gameBoard[i].length;j++) {
+                    if(gameBoard[i][j] == 1) {
+                        blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN));
+
+                    }
+                    if(gameBoard[i][j] == 2) {
+
+                        blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN));
+
+                    }
+                }
         }
         yPaddle=getHeight()-PADDLE_THICKNESS*6;
         xPaddle=getWidth()/2-PADDLE_LENGTH/2;
@@ -141,8 +182,8 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
             running=b;
         }
 
-        private int hit(Point p, int x, int y) {
-            Rect blockRect = new Rect(p.x, p.y, p.x+blockWidth, p.y+blockHeight);
+        private int hit(Block p, int x, int y) {
+            Rect blockRect = new Rect(p.getX, p.getY, p.getX+blockWidth, p.getY+blockHeight);
             if(blockRect.contains(x-BALL_SIZE, y) || blockRect.contains(x+BALL_SIZE, y)) {
                 return 0;
             } else if(blockRect.contains(x, y-BALL_SIZE) || blockRect.contains(x, y+BALL_SIZE)) {
@@ -194,7 +235,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
 
                     //see if ball has hit a block
                     for (int i = 0; i < blocks.size(); i++) {
-                        Point b = blocks.get(i);
+                        Block b = blocks.get(i);
                         int edge = hit(b, p.getPositionX(), p.getPositionY());
                         if (edge >= 0) {
                             if (blockPlayer.isPlaying()) {
