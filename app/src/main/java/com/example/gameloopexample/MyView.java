@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -19,17 +20,19 @@ import java.util.Random;
 
 public class MyView extends SurfaceView implements SurfaceHolder.Callback {
 
-    private static final int NUM_ROWS = 3;
     private static final int NUM_COLS = 10;
     private static final int TOP_MARGIN = 50;
-    private final int PADDLE_THICKNESS=20;
-    private final int PADDLE_LENGTH=150;
     private final int BALL_SIZE=25;
     private final int SPECIAL_ABILITY_BALL_SIZE = 10;
     private final int MULTIPLE_BALL_COLOR = Color.RED;
     private final int SPECIAL_ABILITY_FALL_SPEED = 15;
-    private final int PADDLE_WIDTH_INCREASE = 100;
+    private final int PADDLE_LENGTH_INCREASE = 100;
     private final int PADDLE_THICKNESS_INCREASE = 10;
+    private final int PADDLE_INCREASE_TIME = 15;
+    public int paddle_thickness = 20;
+    public int paddle_length = 150;
+    private Handler handler;
+    private Runnable paddleRunnable;
     private ArrayList<Ball> balls;
     private int xPaddle,yPaddle;
     private Rect rect;
@@ -73,6 +76,15 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
         setFocusable(true);
         gameBoard = new int[20][10];
+        handler = new Handler();
+
+        paddleRunnable = new Runnable() {
+            @Override
+            public void run() {
+                paddle_length -= PADDLE_LENGTH_INCREASE;
+                paddle_thickness -= PADDLE_THICKNESS_INCREASE;
+            }
+        };
 
 
         InputStream s = getResources().openRawResource(R.raw.boardlayout1);
@@ -106,7 +118,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         for(Ball p: balls) {
             canvas.drawCircle(p.getPositionX(), p.getPositionY(), p.radius, p.paint);
         }
-        canvas.drawRect(xPaddle,yPaddle,xPaddle+PADDLE_LENGTH,yPaddle+PADDLE_THICKNESS,ballPaint);
+        canvas.drawRect(xPaddle, yPaddle, xPaddle + paddle_length, yPaddle + paddle_thickness, ballPaint);
         for(Block p:blocks) {
             canvas.drawRect(p.getX,p.getY,p.getX+blockWidth-2,p.getY+blockHeight-2,ballPaint);
         }
@@ -114,9 +126,9 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        xPaddle=(int)event.getX()-PADDLE_LENGTH/2;
+        xPaddle = (int) event.getX() - paddle_length / 2;
         rect.left=xPaddle;
-        rect.right=xPaddle+PADDLE_LENGTH;
+        rect.right = xPaddle + paddle_length;
         return true;
     }
 
@@ -138,9 +150,9 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
         }
-        yPaddle=getHeight()-PADDLE_THICKNESS*6;
-        xPaddle=getWidth()/2-PADDLE_LENGTH/2;
-        rect=new Rect(xPaddle, yPaddle, xPaddle+PADDLE_LENGTH, yPaddle+PADDLE_THICKNESS);
+        yPaddle = getHeight() - paddle_thickness * 6;
+        xPaddle = getWidth() / 2 - paddle_length / 2;
+        rect = new Rect(xPaddle, yPaddle, xPaddle + paddle_length, yPaddle + paddle_thickness);
         thread.setRunning(true);
         thread.start();
     }
@@ -161,11 +173,6 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                 //just do nothing so go to the top of while loop
             }
         }
-    }
-
-    public void resetPaddle() {
-        PADDLE_THICKNESS = PADDLE_THICKNESS - PADDLE_THICKNESS_INCREASE;
-
     }
 
     class MyThread extends Thread {
@@ -256,6 +263,12 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                                 case 2:
                                     //Multiple balls on screen.  Make new ball fall straight down
                                     balls.add(new Ball(blocks.get(i).getX + (blockWidth / 2), blocks.get(i).getY - blockHeight, 0, SPECIAL_ABILITY_FALL_SPEED, SPECIAL_ABILITY_BALL_SIZE, MULTIPLE_BALL_COLOR));
+                                    break;
+                                case 3:
+                                    //Increase Paddle Size.  Start Paddle Countdown Timer
+                                    paddle_length += PADDLE_LENGTH_INCREASE;
+                                    paddle_thickness += PADDLE_THICKNESS_INCREASE;
+                                    handler.postDelayed(paddleRunnable, PADDLE_INCREASE_TIME * 1000);
                                     break;
                             }
                             blocks.remove(i);
