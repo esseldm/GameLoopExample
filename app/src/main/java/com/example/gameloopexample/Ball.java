@@ -1,5 +1,8 @@
 package com.example.gameloopexample;
 
+import android.graphics.Color;
+import android.graphics.Paint;
+
 /**
  * Created by richardselep on 4/1/15.
  */
@@ -7,6 +10,8 @@ package com.example.gameloopexample;
 public class Ball {
 
     public boolean bounce;
+    public int radius = 25;
+    public Paint paint;
     private int positionX;
     private int positionY;
     private double xVel;
@@ -18,6 +23,19 @@ public class Ball {
         this.xVel = xVel;
         this.yVel = yVel;
         bounce = false;
+        paint = new Paint();
+        paint.setColor(Color.BLUE);
+    }
+
+    public Ball(int positionX, int positionY, double xVel, double yVel, int radius, int color) {
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.xVel = xVel;
+        this.yVel = yVel;
+
+        this.radius = radius;
+        this.paint = new Paint();
+        paint.setColor(color);
     }
 
     public int getPositionX() {

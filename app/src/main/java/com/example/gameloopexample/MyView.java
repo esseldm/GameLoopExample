@@ -25,6 +25,9 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     private final int PADDLE_THICKNESS=20;
     private final int PADDLE_LENGTH=150;
     private final int BALL_SIZE=25;
+    private final int SPECIAL_ABILITY_BALL_SIZE = 10;
+    private final int MULTIPLE_BALL_COLOR = Color.RED;
+    private final int SPECIAL_ABILITY_FALL_SPEED = 15;
     private ArrayList<Ball> balls;
     private int xPaddle,yPaddle;
     private Rect rect;
@@ -58,18 +61,12 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         paddlePlayer = MediaPlayer.create(getContext(), R.raw.bounce2);
         blocks=new ArrayList<Block>();
         balls = new ArrayList<Ball>();
-        Ball ball1 = new Ball(50, 600, 10.0, 25.0);
-        //TEST
-        Ball ball2 = new Ball(300, 200, 10.0, 25.0);
+        Ball ball1 = new Ball(400, 400, 10, 25);
         balls.add(ball1);
-        //TEST
-        balls.add(ball2);
         xPaddle=50;
         yPaddle=1000;
         bgPaint=new Paint();
         bgPaint.setColor(Color.BLACK);
-        ballPaint=new Paint();
-        ballPaint.setColor(Color.BLUE);
         thread=new MyThread();
         getHolder().addCallback(this);
         setFocusable(true);
@@ -105,7 +102,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         super.onDraw(canvas);
         canvas.drawRect(0,0,getWidth(),getHeight(),bgPaint);
         for(Ball p: balls) {
-            canvas.drawCircle(p.getPositionX(), p.getPositionY(), BALL_SIZE, ballPaint);
+            canvas.drawCircle(p.getPositionX(), p.getPositionY(), p.radius, p.paint);
         }
         canvas.drawRect(xPaddle,yPaddle,xPaddle+PADDLE_LENGTH,yPaddle+PADDLE_THICKNESS,ballPaint);
         for(Block p:blocks) {
@@ -251,7 +248,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                                     break;
                                 case 2:
                                     //Multiple balls on screen.  Make new ball fall straight down
-                                    balls.add(new Ball(blocks.get(i).getX + (blockWidth / 2), blocks.get(i).getY, 0, 10));
+                                    balls.add(new Ball(blocks.get(i).getX + (blockWidth / 2), blocks.get(i).getY, 0, SPECIAL_ABILITY_FALL_SPEED, SPECIAL_ABILITY_BALL_SIZE, MULTIPLE_BALL_COLOR));
                                     break;
                             }
                             blocks.remove(i);
