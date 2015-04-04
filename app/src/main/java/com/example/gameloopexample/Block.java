@@ -9,8 +9,9 @@ public class Block {
     public int getY;
     public int specialAbility = 0;
 
-    public Block(int x, int y){
+    public Block(int x, int y, int special){
         getX = x;
         getY = y;
+        specialAbility = special;
     }
 }

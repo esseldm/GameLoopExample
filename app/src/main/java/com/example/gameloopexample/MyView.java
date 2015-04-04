@@ -134,12 +134,12 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         for(int i=0;i<gameBoard.length;i++) {
                 for(int j=0;j<gameBoard[i].length;j++) {
                     if(gameBoard[i][j] == 1) {
-                        blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN));
+                        blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN,1));
 
                     }
                     if(gameBoard[i][j] == 2) {
 
-                        blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN));
+                        blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN,2));
 
                     }
                 }
