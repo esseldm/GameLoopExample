@@ -28,8 +28,8 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     private final int MULTIPLE_BALL_COLOR = Color.RED;
     private final int PADDLE_INCREASE_COLOR = Color.GREEN;
     private final int SPECIAL_ABILITY_FALL_SPEED = 15;
-    private final int PADDLE_LENGTH_INCREASE = 100;
-    private final int PADDLE_THICKNESS_INCREASE = 10;
+    private final int PADDLE_LENGTH_INCREASE = 50;
+    private final int PADDLE_THICKNESS_INCREASE = 0;
     private final int PADDLE_INCREASE_TIME = 15;
     private final int MULTIPLE_BALLS = 1;
     private final int PADDLE_INCREASE = 2;

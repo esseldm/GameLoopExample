@@ -22,6 +22,10 @@
             android:label="@string/title_activity_game_play"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".AdvanceBreakout"
+            android:label="@string/title_activity_advance_breakout" >
+        </activity>
     </application>
 
 </manifest>
