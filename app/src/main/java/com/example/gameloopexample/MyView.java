@@ -23,7 +23,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final int NUM_COLS = 10;
     private static final int TOP_MARGIN = 50;
-    private final int BALL_SIZE=25;
+    private final int BALL_SIZE = 20;
     private final int SPECIAL_ABILITY_BALL_SIZE = 10;
     private final int MULTIPLE_BALL_COLOR = Color.RED;
     private final int PADDLE_INCREASE_COLOR = Color.GREEN;
@@ -216,10 +216,10 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     //up
                     p.setPositionX((int) ((double) p.getPositionX() + p.getxVel()));
                     p.setPositionY((int) ((double) p.getPositionY() + p.getyVel()));
-                    if (p.getPositionX() - BALL_SIZE < 0 || p.getPositionX() + BALL_SIZE > getWidth()) {
+                    if (((p.getPositionX() - (BALL_SIZE / 2)) < 0) || ((p.getPositionX() + (BALL_SIZE / 2)) > getWidth())) {
                         p.setxVel(-p.getxVel());
                     }
-                    if (p.getPositionY() - BALL_SIZE < 0 || p.getPositionY() + BALL_SIZE > getHeight()) {
+                    if (((p.getPositionY() - (BALL_SIZE / 2)) < 0) || ((p.getPositionY() + (BALL_SIZE / 2)) > getHeight())) {
                         p.setyVel(-p.getyVel());
                     }
                     //Balls
