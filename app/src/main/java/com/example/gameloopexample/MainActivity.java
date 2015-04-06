@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 
 public class MainActivity extends Activity {
@@ -25,6 +24,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent startGame = new Intent(MainActivity.this,AdvanceBreakout.class);
+                startGame.putExtra("level", 1);
                 startActivityForResult(startGame, 1);
             }
         });

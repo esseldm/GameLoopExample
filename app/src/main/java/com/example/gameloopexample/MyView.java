@@ -16,6 +16,7 @@ import android.view.SurfaceView;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -35,6 +36,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     private final int PADDLE_INCREASE = 2;
     public int paddle_thickness = 20;
     public int paddle_length = 150;
+    ArrayList<InputStream> levels;
     private Handler handler;
     private Runnable paddleRunnable;
     private ArrayList<Ball> balls;
@@ -93,7 +95,22 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         };
 
 
-        InputStream s = getResources().openRawResource(R.raw.boardlayout1);
+        Field[] f = R.raw.class.getFields();
+        ArrayList<Integer> boards = new ArrayList<>(f.length - 2);
+
+        for (int i = 0; i < f.length; i++) {
+            if (f[i].getName().substring(0, f[i].getName().length() - 1).equals("boardlayout")) {
+                try {
+                    boards.add(i, f[i].getInt(f[i]));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        int level = 1;
+
+        InputStream s = getResources().openRawResource(boards.get(level));
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(s));
         int row = 0;
         try {
@@ -260,6 +277,9 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     }
 
                     //see if ball has hit a block
+                    if (blocks.size() == 0) {
+                        //You Win
+                    }
                     for (int i = 0; i < blocks.size(); i++) {
                         Block b = blocks.get(i);
                         int edge = hit(b, p.getPositionX(), p.getPositionY());
