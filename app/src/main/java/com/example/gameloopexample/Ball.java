@@ -76,9 +76,4 @@ public class Ball {
     public int getSpecial_ability() {
         return special_ability;
     }
-
-    class BallThread extends Thread {
-
-        //Lots of fun stuff will go here eventually
-    }
 }
