@@ -18,14 +18,23 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        Button button = (Button) findViewById(R.id.startGame);
+        Button start = (Button) findViewById(R.id.startGame);
+        Button scores = (Button) findViewById(R.id.highScores);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent startGame = new Intent(MainActivity.this,AdvanceBreakout.class);
+                Intent startGame = new Intent(MainActivity.this, AdvanceBreakout.class);
                 startGame.putExtra("level", 1);
                 startActivityForResult(startGame, 1);
+            }
+        });
+
+        scores.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent highScores = new Intent(MainActivity.this, HighScoresActivity.class);
+                startActivity(highScores);
             }
         });
     }
