@@ -1,7 +1,7 @@
 package com.example.gameloopexample;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -9,17 +9,18 @@ import android.view.WindowManager;
 
 public class AdvanceBreakout extends ActionBarActivity {
 
-    public static int level = 3;
+    public static int level = 0;
+
+    public static void setLevel() {
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_advance_breakout);
-    }
-
-    public static void setLevel(){
-
     }
 
     @Override
