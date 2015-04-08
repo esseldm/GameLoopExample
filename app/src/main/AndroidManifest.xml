@@ -27,6 +27,10 @@
             android:label="@string/title_activity_advance_breakout"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".WinActivity"
+            android:label="@string/title_activity_win" >
+        </activity>
     </application>
 
 </manifest>

@@ -6,5 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_game_play">GamePlay</string>
     <string name="title_activity_advance_breakout">AdvanceBreakout</string>
+    <string name="title_activity_high_scores">HighScoresActivity</string>
+    <string name="title_activity_win">WinActivity</string>
 
 </resources>
