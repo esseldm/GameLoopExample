@@ -27,7 +27,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     private static final int TOP_MARGIN = 50;
     private final int BALL_SIZE = 20;
     private boolean SPECIAL_SHOOTING = false;
-    private ArrayList<Rect> bullets;
+    private ArrayList<Bullet> bullets;
     private final int SPECIAL_ABILITY_BALL_SIZE = 10;
     private final int MULTIPLE_BALL_COLOR = Color.RED;
     private final int PADDLE_INCREASE_COLOR = Color.GREEN;
@@ -76,7 +76,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         paddlePlayer = MediaPlayer.create(getContext(), R.raw.bounce2);
         blocks=new ArrayList<Block>();
         balls = new ArrayList<Ball>();
-        bullets = new ArrayList<Rect>();
+        bullets = new ArrayList<Bullet>();
         xPaddle=50;
         yPaddle=1000;
         bgPaint=new Paint();
@@ -148,6 +148,9 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         for(Block p:blocks) {
             canvas.drawRect(p.getX, p.getY, p.getX + blockWidth - 2, p.getY + blockHeight - 2, blockPaint);
         }
+        for(Bullet p:bullets) {
+            canvas.drawRect(p.x, p.y, 20, 20, blockPaint);
+        }
     }
 
     @Override
@@ -155,6 +158,12 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         xPaddle = (int) event.getX() - paddle_length / 2;
         rect.left=xPaddle;
         rect.right = xPaddle + paddle_length;
+
+        //Special shooting for on touch
+        if(SPECIAL_SHOOTING == true) {
+            Bullet bullet = new Bullet(xPaddle, yPaddle,60);
+            bullets.add(bullet);
+        }
         return true;
     }
 
@@ -256,6 +265,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                         }
                         continue;
                     }
+
                     //see if ball has hit paddle (or gone below it)
                     if ((rect.contains(p.getPositionX(), p.getPositionY() + BALL_SIZE) || rect.contains(p.getPositionX() - BALL_SIZE, p.getPositionY()) ||
                             rect.contains(p.getPositionX() + BALL_SIZE, p.getPositionY()) || rect.contains(p.getPositionX(), p.getPositionY() - BALL_SIZE)) && !p.bounce) {
@@ -306,7 +316,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                                     Log.d("Balls", "Creating Increase Paddle Special Ability");
                                     balls.add(new Ball(blocks.get(i).getX + (blockWidth / 2), blocks.get(i).getY + blockHeight, 0, SPECIAL_ABILITY_FALL_SPEED, SPECIAL_ABILITY_BALL_SIZE, PADDLE_INCREASE_COLOR, blocks.get(i).specialAbility));
                                 } else if(blocks.get(i).specialAbility == BULLETS){
-                                    //Shoots bullets
+                                  SPECIAL_SHOOTING = true;
                                 }
                             }
 
@@ -323,6 +333,28 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                                     p.setyVel(-p.getyVel());
                                     break;
                             }
+                            break;
+                        }
+                    }
+                }
+
+                //see if bullet hit block
+                for (int count = 0; count < bullets.size(); count++) {
+                    Bullet p = bullets.get(count);
+                    //up
+                    p.y=(int) ((double) p.y + p.yVel);
+
+                    //see if ball has hit a block
+                    for (int i = 0; i < blocks.size(); i++) {
+                        Block b = blocks.get(i);
+                        int edge = hit(b, p.x, p.y);
+                        if (edge >= 0) {
+                            if (blockPlayer.isPlaying()) {
+                                blockPlayer.seekTo(0);
+                            } else {
+                                blockPlayer.start();
+                            }
+                            blocks.remove(i);
                             break;
                         }
                     }
