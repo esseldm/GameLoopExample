@@ -9,6 +9,7 @@ import android.view.WindowManager;
 
 public class AdvanceBreakout extends ActionBarActivity {
 
+    public static int level = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,6 +18,9 @@ public class AdvanceBreakout extends ActionBarActivity {
         setContentView(R.layout.activity_advance_breakout);
     }
 
+    public static void setLevel(){
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

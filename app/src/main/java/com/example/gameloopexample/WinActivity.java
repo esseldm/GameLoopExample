@@ -22,6 +22,7 @@ public class WinActivity extends ActionBarActivity {
         restart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AdvanceBreakout.level ++;
                 Intent intent = new Intent(WinActivity.this, AdvanceBreakout.class);
                 startActivity(intent);
             }
