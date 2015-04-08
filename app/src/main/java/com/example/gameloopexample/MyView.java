@@ -25,28 +25,30 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final int NUM_COLS = 10;
     private static final int TOP_MARGIN = 50;
+    private static final int MAX_BULLETS = 3;
     private final int BALL_SIZE = 20;
-    private boolean SPECIAL_SHOOTING = false;
-    private ArrayList<Bullet> bullets;
     private final int SPECIAL_ABILITY_BALL_SIZE = 10;
     private final int MULTIPLE_BALL_COLOR = Color.RED;
     private final int PADDLE_INCREASE_COLOR = Color.GREEN;
     private final int SPECIAL_ABILITY_FALL_SPEED = 15;
     private final int PADDLE_LENGTH_INCREASE = 50;
     private final int PADDLE_THICKNESS_INCREASE = 0;
-    private final int PADDLE_INCREASE_TIME = 15;
+    private final int SPECIAL_ABILITY_TIME = 15;
     private final int MULTIPLE_BALLS = 1;
     private final int PADDLE_INCREASE = 2;
     private final int BULLETS = 3;
     public int paddle_thickness = 20;
     public int paddle_length = 150;
     ArrayList<InputStream> levels;
+    private boolean SPECIAL_SHOOTING = false;
+    private ArrayList<Bullet> bullets;
     private Handler handler;
     private Runnable paddleRunnable;
+    private Runnable bulletRunnable;
     private ArrayList<Ball> balls;
     private int xPaddle,yPaddle;
     private Rect rect;
-    private Paint bgPaint, blockPaint;
+    private Paint bgPaint, blockPaint, bulletPaint;
     private MyThread thread;
     private ArrayList<Block> blocks;
     private int blockWidth;
@@ -71,6 +73,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         init(attrs, defStyle);
     }
 
+
     private void init(AttributeSet attrs, int defStyle) {
         blockPlayer = MediaPlayer.create(getContext(), R.raw.bounce);
         paddlePlayer = MediaPlayer.create(getContext(), R.raw.bounce2);
@@ -88,6 +91,8 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         handler = new Handler();
         blockPaint = new Paint();
         blockPaint.setColor(Color.BLUE);
+        bulletPaint = new Paint();
+        bulletPaint.setColor(Color.YELLOW);
 
         paddleRunnable = new Runnable() {
             @Override
@@ -97,6 +102,12 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
             }
         };
 
+        bulletRunnable = new Runnable() {
+            @Override
+            public void run() {
+                SPECIAL_SHOOTING = false;
+            }
+        };
 
         Field[] f = R.raw.class.getFields();
         ArrayList<Integer> boards = new ArrayList<>(f.length - 2);
@@ -136,7 +147,6 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -149,7 +159,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
             canvas.drawRect(p.getX, p.getY, p.getX + blockWidth - 2, p.getY + blockHeight - 2, blockPaint);
         }
         for(Bullet p:bullets) {
-            canvas.drawRect(p.x, p.y, 20, 20, blockPaint);
+            canvas.drawRect(p.x, p.y, p.x + 20, p.y + 20, bulletPaint);
         }
     }
 
@@ -161,10 +171,15 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
 
         //Special shooting for on touch
         if(SPECIAL_SHOOTING == true) {
-            Bullet bullet = new Bullet(xPaddle, yPaddle,60);
-            bullets.add(bullet);
+
+            if (bullets.size() <= MAX_BULLETS) {
+                Bullet bullet = new Bullet(xPaddle, yPaddle + 20, 60);
+                bullets.add(bullet);
+            }
+
         }
         return true;
+
     }
 
     @Override
@@ -184,7 +199,13 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                 } else if (gameBoard[i][j] == 3) {
 
                     blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN, PADDLE_INCREASE));
+
+                } else if (gameBoard[i][j] == 4) {
+
+                    blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN, BULLETS));
+
                 }
+
 
             }
         }
@@ -272,12 +293,15 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                         //Check to see if ball that hit paddle was special ability
                         if (p.getSpecial_ability() == MULTIPLE_BALLS) {
                             balls.remove(p);
-                            balls.add(new Ball(xPaddle+20, yPaddle+20, -15,-15));
+                            balls.add(new Ball(xPaddle, yPaddle - 50, -15, -15));
                             continue;
                         } else if (p.getSpecial_ability() == PADDLE_INCREASE) {
                             paddle_length += PADDLE_LENGTH_INCREASE;
                             paddle_thickness += PADDLE_THICKNESS_INCREASE;
-                            handler.postDelayed(paddleRunnable, PADDLE_INCREASE_TIME * 1000);
+                            handler.postDelayed(paddleRunnable, SPECIAL_ABILITY_TIME * 1000);
+                        } else if (p.getSpecial_ability() == BULLETS) {
+                            SPECIAL_SHOOTING = true;
+                            handler.postDelayed(bulletRunnable, SPECIAL_ABILITY_TIME * 1000);
                         } else {
                             if (paddlePlayer.isPlaying()) {
                                 paddlePlayer.seekTo(0);
@@ -316,7 +340,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                                     Log.d("Balls", "Creating Increase Paddle Special Ability");
                                     balls.add(new Ball(blocks.get(i).getX + (blockWidth / 2), blocks.get(i).getY + blockHeight, 0, SPECIAL_ABILITY_FALL_SPEED, SPECIAL_ABILITY_BALL_SIZE, PADDLE_INCREASE_COLOR, blocks.get(i).specialAbility));
                                 } else if(blocks.get(i).specialAbility == BULLETS){
-                                  SPECIAL_SHOOTING = true;
+                                    SPECIAL_SHOOTING = true;
                                 }
                             }
 
@@ -342,7 +366,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                 for (int count = 0; count < bullets.size(); count++) {
                     Bullet p = bullets.get(count);
                     //up
-                    p.y=(int) ((double) p.y + p.yVel);
+                    p.y = (int) ((double) p.y - p.yVel);
 
                     //see if ball has hit a block
                     for (int i = 0; i < blocks.size(); i++) {
@@ -355,6 +379,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                                 blockPlayer.start();
                             }
                             blocks.remove(i);
+                            bullets.remove(p);
                             break;
                         }
                     }
