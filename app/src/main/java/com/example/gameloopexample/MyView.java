@@ -107,7 +107,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
         }
-
+//CHanged
         int level = 1;
 
         InputStream s = getResources().openRawResource(boards.get(level));
