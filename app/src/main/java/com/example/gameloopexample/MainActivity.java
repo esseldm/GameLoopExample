@@ -19,6 +19,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         Button start = (Button) findViewById(R.id.startGame);
+        Button createBoard = (Button) findViewById(R.id.createBoard);
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -26,6 +27,14 @@ public class MainActivity extends Activity {
                 Intent startGame = new Intent(MainActivity.this, AdvanceBreakout.class);
                 startGame.putExtra("level", 1);
                 startActivityForResult(startGame, 1);
+            }
+        });
+
+        createBoard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent startCreateBoard = new Intent(MainActivity.this, CreateBoardActivity.class);
+                startActivity(startCreateBoard);
             }
         });
     }

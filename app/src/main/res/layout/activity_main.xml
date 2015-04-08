@@ -19,8 +19,8 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="High Scores"
-        android:id="@+id/highScores"
+        android:text="Create Board"
+        android:id="@+id/createBoard"
         android:layout_above="@+id/startGame"
         android:layout_centerHorizontal="true" />
 

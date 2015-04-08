@@ -31,6 +31,10 @@
             android:name=".WinActivity"
             android:label="@string/title_activity_win" >
         </activity>
+        <activity
+            android:name=".CreateBoardActivity"
+            android:label="@string/title_activity_create_board" >
+        </activity>
     </application>
 
 </manifest>
