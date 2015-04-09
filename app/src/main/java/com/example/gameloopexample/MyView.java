@@ -46,7 +46,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     private Runnable paddleRunnable;
     private Runnable bulletRunnable;
     private ArrayList<Ball> balls;
-    private int xPaddle,yPaddle;
+    private int xPaddle, yPaddle;
     private Rect rect;
     private Paint bgPaint, blockPaint, bulletPaint;
     private MyThread thread;
@@ -77,14 +77,14 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     private void init(AttributeSet attrs, int defStyle) {
         blockPlayer = MediaPlayer.create(getContext(), R.raw.bounce);
         paddlePlayer = MediaPlayer.create(getContext(), R.raw.bounce2);
-        blocks=new ArrayList<Block>();
+        blocks = new ArrayList<Block>();
         balls = new ArrayList<Ball>();
         bullets = new ArrayList<Bullet>();
-        xPaddle=50;
-        yPaddle=1000;
-        bgPaint=new Paint();
+        xPaddle = 50;
+        yPaddle = 1000;
+        bgPaint = new Paint();
         bgPaint.setColor(Color.BLACK);
-        thread=new MyThread();
+        thread = new MyThread();
         getHolder().addCallback(this);
         setFocusable(true);
         gameBoard = new int[50][10];
@@ -132,16 +132,16 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
             while (line != null) {
                 String[] values = line.split(" ");
 
-                for(int i = 0; i < values.length;i++){
-                    gameBoard[row][i]= Integer.parseInt(values[i]);
+                for (int i = 0; i < values.length; i++) {
+                    gameBoard[row][i] = Integer.parseInt(values[i]);
 
                 }
                 line = bufferedReader.readLine();
                 row++;
             }
-        }catch(Exception ex){
+        } catch (Exception ex) {
 
-        }finally{
+        } finally {
 
         }
 
@@ -150,15 +150,15 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawRect(0,0,getWidth(),getHeight(),bgPaint);
-        for(Ball p: balls) {
+        canvas.drawRect(0, 0, getWidth(), getHeight(), bgPaint);
+        for (Ball p : balls) {
             canvas.drawCircle(p.getPositionX(), p.getPositionY(), p.radius, p.paint);
         }
         canvas.drawRect(xPaddle, yPaddle, xPaddle + paddle_length, yPaddle + paddle_thickness, blockPaint);
-        for(Block p:blocks) {
+        for (Block p : blocks) {
             canvas.drawRect(p.getX, p.getY, p.getX + blockWidth - 2, p.getY + blockHeight - 2, blockPaint);
         }
-        for(Bullet p:bullets) {
+        for (Bullet p : bullets) {
             canvas.drawRect(p.x, p.y, p.x + 20, p.y + 20, bulletPaint);
         }
     }
@@ -166,11 +166,11 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         xPaddle = (int) event.getX() - paddle_length / 2;
-        rect.left=xPaddle;
+        rect.left = xPaddle;
         rect.right = xPaddle + paddle_length;
 
         //Special shooting for on touch
-        if(SPECIAL_SHOOTING == true) {
+        if (SPECIAL_SHOOTING == true) {
 
             if (bullets.size() <= MAX_BULLETS) {
                 Bullet bullet = new Bullet(xPaddle, yPaddle + 20, 60);
@@ -184,10 +184,10 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        blockWidth=getWidth()/NUM_COLS;
-        blockHeight=getHeight()/50;
+        blockWidth = getWidth() / NUM_COLS;
+        blockHeight = getHeight() / 50;
 
-        for(int i=0;i<gameBoard.length;i++) {
+        for (int i = 0; i < gameBoard.length; i++) {
             for (int j = 0; j < gameBoard[i].length; j++) {
                 if (gameBoard[i][j] == 1) {
                     blocks.add(new Block(j * blockWidth, i * blockHeight + TOP_MARGIN, 0));
@@ -212,7 +212,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         yPaddle = getHeight() - paddle_thickness * 6;
         xPaddle = getWidth() / 2 - paddle_length / 2;
         rect = new Rect(xPaddle, yPaddle, xPaddle + paddle_length, yPaddle + paddle_thickness);
-        Ball ball1 = new Ball(xPaddle, yPaddle-20, 10, 25);
+        Ball ball1 = new Ball(xPaddle, yPaddle - 20, 10, 25);
         balls.add(ball1);
         thread.setRunning(true);
         thread.start();
@@ -225,11 +225,11 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        boolean retry=true;
-        while(retry) {
+        boolean retry = true;
+        while (retry) {
             try {
                 thread.join();
-                retry=false;
+                retry = false;
             } catch (InterruptedException e) {
                 //just do nothing so go to the top of while loop
             }
@@ -242,18 +242,18 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         private Random rand;
 
         public MyThread() {
-            rand=new Random();
+            rand = new Random();
         }
 
         public void setRunning(boolean b) {
-            running=b;
+            running = b;
         }
 
         private int hit(Block p, int x, int y) {
-            Rect blockRect = new Rect(p.getX, p.getY, p.getX+blockWidth, p.getY+blockHeight);
-            if(blockRect.contains(x-BALL_SIZE, y) || blockRect.contains(x+BALL_SIZE, y)) {
+            Rect blockRect = new Rect(p.getX, p.getY, p.getX + blockWidth, p.getY + blockHeight);
+            if (blockRect.contains(x - BALL_SIZE, y) || blockRect.contains(x + BALL_SIZE, y)) {
                 return 0;
-            } else if(blockRect.contains(x, y-BALL_SIZE) || blockRect.contains(x, y+BALL_SIZE)) {
+            } else if (blockRect.contains(x, y - BALL_SIZE) || blockRect.contains(x, y + BALL_SIZE)) {
                 return 1;
             }
 
@@ -261,10 +261,9 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
 
-
         @Override
         public void run() {
-            while(running) {
+            while (running) {
                 for (int count = 0; count < balls.size(); count++) {
                     Ball p = balls.get(count);
                     //up
@@ -320,7 +319,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     //see if ball has hit a block
                     if (blocks.size() == 0) {
                         running = false;
-                        Intent intent = new Intent(getContext(),WinActivity.class);
+                        Intent intent = new Intent(getContext(), WinActivity.class);
                         getContext().startActivity(intent);
                     }
                     for (int i = 0; i < blocks.size(); i++) {
@@ -339,7 +338,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                                 } else if (blocks.get(i).specialAbility == PADDLE_INCREASE) {
                                     Log.d("Balls", "Creating Increase Paddle Special Ability");
                                     balls.add(new Ball(blocks.get(i).getX + (blockWidth / 2), blocks.get(i).getY + blockHeight, 0, SPECIAL_ABILITY_FALL_SPEED, SPECIAL_ABILITY_BALL_SIZE, PADDLE_INCREASE_COLOR, blocks.get(i).specialAbility));
-                                } else if(blocks.get(i).specialAbility == BULLETS){
+                                } else if (blocks.get(i).specialAbility == BULLETS) {
                                     SPECIAL_SHOOTING = true;
                                 }
                             }
@@ -386,8 +385,8 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                 }
 
                 //redraw the screen
-                Canvas canvas=getHolder().lockCanvas();
-                if (canvas!=null) {
+                Canvas canvas = getHolder().lockCanvas();
+                if (canvas != null) {
                     synchronized (canvas) {
                         onDraw(canvas);
                     }
