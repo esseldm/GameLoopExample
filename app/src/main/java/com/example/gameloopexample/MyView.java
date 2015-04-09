@@ -255,6 +255,9 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                 return 0;
             } else if (blockRect.contains(x, y - BALL_SIZE) || blockRect.contains(x, y + BALL_SIZE)) {
                 return 1;
+            } else if (blockRect.contains(x - BALL_SIZE, y - BALL_SIZE) || blockRect.contains(x + BALL_SIZE, y - BALL_SIZE)
+                    || blockRect.contains(x - BALL_SIZE, y + BALL_SIZE) || blockRect.contains(x + BALL_SIZE, y + BALL_SIZE)) {
+                return 2;
             }
 
             return -1;
