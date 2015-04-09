@@ -29,14 +29,6 @@ public class MainActivity extends Activity {
                 startActivityForResult(startGame, 1);
             }
         });
-
-        createBoard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent startCreateBoard = new Intent(MainActivity.this, CreateBoardActivity.class);
-                startActivity(startCreateBoard);
-            }
-        });
     }
 
     @Override
