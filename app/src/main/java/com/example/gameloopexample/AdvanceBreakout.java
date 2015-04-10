@@ -9,7 +9,7 @@ import android.view.WindowManager;
 
 public class AdvanceBreakout extends ActionBarActivity {
 
-    public static int level = 0;
+    public static int level = 1;
 
     public static void setLevel() {
 
