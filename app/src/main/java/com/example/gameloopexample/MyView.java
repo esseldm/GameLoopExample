@@ -283,8 +283,10 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     if (p.getPositionY() - BALL_SIZE > rect.bottom) {
                         balls.remove(p);
                         if (balls.size() == 0) {
-                            //User lost.  Spawning in another ball
-                            balls.add(new Ball(450, 450, 10, 25));
+                            //User lost.
+                            running = false;
+                            Intent intent = new Intent(getContext(), LoseActivity.class);
+                            getContext().startActivity(intent);
                         }
                         continue;
                     }

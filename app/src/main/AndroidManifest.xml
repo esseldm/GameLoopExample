@@ -29,11 +29,18 @@
         </activity>
         <activity
             android:name=".WinActivity"
-            android:label="@string/title_activity_win" >
+            android:label="@string/title_activity_win"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".CreateBoardActivity"
-            android:label="@string/title_activity_create_board" >
+            android:label="@string/title_activity_create_board"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".LoseActivity"
+            android:label="@string/title_activity_lose"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

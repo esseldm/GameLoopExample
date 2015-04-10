@@ -9,5 +9,6 @@
     <string name="title_activity_high_scores">HighScoresActivity</string>
     <string name="title_activity_win">WinActivity</string>
     <string name="title_activity_create_board">CreateBoardActivity</string>
+    <string name="title_activity_lose">LoseActivity</string>
 
 </resources>
