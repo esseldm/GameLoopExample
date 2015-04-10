@@ -392,7 +392,6 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     }
                 }
 
-                AdvanceBreakout.setNewScore(score);
 
                 //redraw the screen
                 Canvas canvas = getHolder().lockCanvas();

@@ -24,9 +24,6 @@ public class AdvanceBreakout extends ActionBarActivity {
         addScore = (TextView) findViewById(R.id.score);
     }
 
-    public static void setNewScore(int score){
-        addScore.setText(score);
-    }
 
 
     @Override
