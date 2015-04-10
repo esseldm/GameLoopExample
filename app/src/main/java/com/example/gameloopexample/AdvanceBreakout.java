@@ -5,15 +5,14 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 
 public class AdvanceBreakout extends ActionBarActivity {
 
     public static int level = 1;
+    public static TextView addScore;
 
-    public static void setLevel() {
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +20,14 @@ public class AdvanceBreakout extends ActionBarActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_advance_breakout);
+
+        addScore = (TextView) findViewById(R.id.score);
     }
+
+    public static void setNewScore(int score){
+        addScore.setText(score);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

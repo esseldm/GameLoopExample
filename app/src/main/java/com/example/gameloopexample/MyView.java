@@ -23,6 +23,7 @@ import java.util.Random;
 
 public class MyView extends SurfaceView implements SurfaceHolder.Callback {
 
+    private int score = 0;
     private static final int NUM_COLS = 10;
     private static final int TOP_MARGIN = 50;
     private static final int MAX_BULLETS = 3;
@@ -331,6 +332,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                         Block b = blocks.get(i);
                         int edge = hit(b, p.getPositionX(), p.getPositionY());
                         if (edge >= 0) {
+                            score = score +10;
                             if (blockPlayer.isPlaying()) {
                                 blockPlayer.seekTo(0);
                             } else {
@@ -377,6 +379,7 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                         Block b = blocks.get(i);
                         int edge = hit(b, p.x, p.y);
                         if (edge >= 0) {
+                            score = score +10;
                             if (blockPlayer.isPlaying()) {
                                 blockPlayer.seekTo(0);
                             } else {
@@ -388,6 +391,8 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                         }
                     }
                 }
+
+                AdvanceBreakout.setNewScore(score);
 
                 //redraw the screen
                 Canvas canvas = getHolder().lockCanvas();

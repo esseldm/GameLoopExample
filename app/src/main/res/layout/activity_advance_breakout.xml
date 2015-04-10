@@ -11,7 +11,8 @@
         android:layout_height="fill_parent"
         class="com.example.gameloopexample.MyView"
         android:id="@+id/view"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/score" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -20,6 +21,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:text="Score" />
+        android:text="0"
+        android:numeric="integer" />
 
 </RelativeLayout>
