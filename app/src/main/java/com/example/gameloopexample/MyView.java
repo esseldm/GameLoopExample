@@ -392,7 +392,6 @@ public class MyView extends SurfaceView implements SurfaceHolder.Callback {
                     }
                 }
 
-
                 //redraw the screen
                 Canvas canvas = getHolder().lockCanvas();
                 if (canvas != null) {

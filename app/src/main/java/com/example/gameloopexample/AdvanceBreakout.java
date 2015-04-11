@@ -11,7 +11,6 @@ import android.widget.TextView;
 public class AdvanceBreakout extends ActionBarActivity {
 
     public static int level = 1;
-    public static TextView addScore;
 
 
     @Override
@@ -21,7 +20,6 @@ public class AdvanceBreakout extends ActionBarActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_advance_breakout);
 
-        addScore = (TextView) findViewById(R.id.score);
     }
 
 
